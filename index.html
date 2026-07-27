@@ -19,21 +19,28 @@
 
             
         }
- /* Force la carte blanche à s'adapter et afficher tout le contenu */
-  body {
-    min-height: 100vh !important;
+ /* Déblocage complet du défilement et de la hauteur */
+  html, body {
     height: auto !important;
+    min-height: 100% !important;
     overflow-y: auto !important;
+    position: static !important;
   }
-  
-  /* Permet au conteneur principal de défiler et de montrer le bouton */
-  .auth-card, .container, div[class*="card"] {
+
+  /* Force tous les conteneurs et cartes à laisser dépasser leur contenu */
+  .app-container, .phone-screen, .auth-card, .card, container, div {
     max-height: none !important;
     height: auto !important;
     overflow: visible !important;
-    margin-bottom: 60px !important;
-    padding-bottom: 40px !important;
   }
+
+  /* Marge sous la carte pour voir le bouton Se connecter facilement */
+  .auth-card, div[class*="card"] {
+    margin-bottom: 80px !important;
+    padding-bottom: 50px !important;
+  }
+
+
 
 
 
