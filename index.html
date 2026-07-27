@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ESP - Chat Étudiant</title>
+       <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ESP Chat</title>
+    ...
+
     <style>
         /* ============ RESET & BASE ============ */
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,6 +22,20 @@
             min-height: 100vh;
             padding: 0;
             margin: 0;
+            /* Permet le défilement fluide sur mobile */
+body, html {
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Assure un espace suffisant en bas pour ne pas masquer le bouton quand le clavier sort */
+.container, .card, main {
+  padding-bottom: 40px; /* Adapte la classe selon ton conteneur principal */
+  max-height: none;
+}
+
+
         }
 
         /* ============ CONTAINER PRINCIPAL ============ */
