@@ -4,12 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ESP - Chat Étudiant</title>
-       <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ESP Chat</title>
-    ...
-
+       
     <style>
         /* ============ RESET & BASE ============ */
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,21 +17,26 @@
             min-height: 100vh;
             padding: 0;
             margin: 0;
-            /* Permet le défilement fluide sur mobile */
-body, html {
-  min-height: 100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
+            <style>
+  /* Force la carte blanche à s'adapter et afficher tout le contenu */
+  body {
+    min-height: 100vh !important;
+    height: auto !important;
+    overflow-y: auto !important;
+  }
+  
+  /* Permet au conteneur principal de défiler et de montrer le bouton */
+  .auth-card, .container, div[class*="card"] {
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin-bottom: 60px !important;
+    padding-bottom: 40px !important;
+  }
+</style>
 
-/* Assure un espace suffisant en bas pour ne pas masquer le bouton quand le clavier sort */
-.container, .card, main {
-  padding-bottom: 40px; /* Adapte la classe selon ton conteneur principal */
-  max-height: none;
-}
 
 
-        }
 
         /* ============ CONTAINER PRINCIPAL ============ */
         .app-container {
