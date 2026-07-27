@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💬 Chat WhatsApp Style</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0b141a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+        .container {
+            background: #e5ddd5;
+            max-width: 900px;
+            width: 100%;
+            height: 95vh;
+            max-height: 850px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* HEADER WhatsApp style */
+        .chat-header {
+            background: #075e54;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #128c7e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: 0.3s;
+            position: relative;
+        }
+        .user-avatar:hover {
+            border-color: white;
+        }
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .user-avatar .avatar-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 10px;
+            text-align: center;
+            padding: 2px 0;
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .user-avatar:hover .avatar-overlay {
+            opacity: 1;
+        }
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .user-status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .header-actions button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .header-actions button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* TABS WhatsApp style */
+        .tabs {
+            display: flex;
+            background: #075e54;
+            padding: 0 20px;
+            gap: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            flex-shrink: 0;
+        }
+        .tab-btn {
+            padding: 12px 25px;
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            border-bottom: 3px solid transparent;
+            position: relative;
+        }
+        .tab-btn:hover {
+            color: white;
+            background: rgba(255,255,255,0.05);
+        }
+        .tab-btn.active {
+            color: white;
+            border-bottom-color: #fff;
+        }
+        .tab-btn .badge {
+            background: #ff4444;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 50%;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+        .tab-content {
+            display: none;
+            flex: 1;
+            overflow: hidden;
+            animation: fadeIn 0.3s;
+        }
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* MESSAGES ZONE - WhatsApp style */
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 20px;
+            background: #e5ddd5;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4c9b8' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        #messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        #messages::-webkit-scrollbar-thumb {
+            background: #b7a58f;
+            border-radius: 10px;
+        }
+
+        .msg {
+            margin: 4px 0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 75%;
+            word-wrap: break-word;
+            position: relative;
+            animation: msgAppear 0.3s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        @keyframes msgAppear {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .msg-mine {
+            background: #dcf8c6;
+            color: #1a1a2e;
+            margin-left: auto;
+            border-bottom-right-radius: 3px;
+        }
+        .msg-other {
+            background: white;
+            color: #1a1a2e;
+            margin-right: auto;
+            border-bottom-left-radius: 3px;
+        }
+        .msg .sender {
+            font-size: 11px;
+            color: #128c7e;
+            font-weight: 600;
+            margin-bottom: 2px;
+            display: block;
+        }
+        .msg .text-content {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .msg .time {
+            font-size: 10px;
+            opacity: 0.6;
+            margin-top: 3px;
+            display: block;
+            text-align: right;
+            font-weight: 400;
+        }
+        .msg img, .msg video {
+            max-width: 250px;
+            max-height: 300px;
+            border-radius: 6px;
+            margin-top: 4px;
+            cursor: pointer;
+        }
+        .msg audio {
+            width: 200px;
+            margin-top: 4px;
+        }
+        .msg .file-link {
+            display: inline-block;
+            background: rgba(0,0,0,0.06);
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-top: 4px;
+            text-decoration: none;
+            color: #075e54;
+            font-weight: 500;
+        }
+        .msg .sticker {
+            font-size: 60px;
+            display: block;
+            line-height: 1;
+        }
+        .msg .system-msg {
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+            font-style: italic;
+            background: none;
+            box-shadow: none;
+            padding: 4px 10px;
+            max-width: 100%;
+        }
+
+        /* TOOLBAR */
+        .toolbar {
+            display: flex;
+            gap: 5px;
+            padding: 8px 12px;
+            background: #f0f0f0;
+            align-items: center;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            border-top: 1px solid #ddd;
+        }
+        .toolbar button {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 50%;
+            transition: 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .toolbar button:hover {
+            background: #ddd;
+        }
+        .toolbar input[type="file"] { display: none; }
+
+        /* EMOJI / STICKER PICKER */
+        .picker-container {
+            display: none;
+            background: white;
+            border-top: 1px solid #ddd;
+            padding: 10px;
+            flex-wrap: wrap;
+            gap: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .picker-container.active {
+            display: flex;
+        }
+        .picker-container span {
+            font-size: 28px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+        .picker-container span:hover {
+            background: #e0e0e0;
+            transform: scale(1.2);
+        }
+
+        /* INPUT AREA */
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f0f0f0;
+            flex-shrink: 0;
+            border-top: 1px solid #ddd;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            background: white;
+            outline: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .chat-input-area input:focus {
+            box-shadow: 0 1px 6px rgba(7,94,84,0.3);
+        }
+        .chat-input-area .btn {
+            width: auto;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: #075e54;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .chat-input-area .btn:hover {
+            background: #0a7a6e;
+            transform: scale(1.02);
+        }
+
+        /* RECORDING */
+        .recording-indicator {
+            display: none;
+            background: #dc3545;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            animation: pulse 1s infinite;
+        }
+        .recording-indicator.active { display: inline-block; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* CLASSEMENT */
+        .ranking-container {
+            padding: 15px 20px;
+            flex: 1;
+            overflow-y: auto;
+            background: #e5ddd5;
+        }
+        .ranking-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: #075e54;
+            color: white;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            margin: 4px 0;
+            transition: 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .ranking-item:hover { transform: translateX(5px); }
+        .ranking-item .rank { font-weight: 700; width: 35px; text-align: center; }
+        .ranking-item .rank.gold { color: #ffc107; }
+        .ranking-item .rank.silver { color: #c0c0c0; }
+        .ranking-item .rank.bronze { color: #cd7f32; }
+        .ranking-item .user { flex: 1; margin-left: 10px; font-weight: 500; }
+        .ranking-item .points {
+            background: #075e54;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .ranking-item.me {
+            background: #dcf8c6;
+            border: 2px solid #075e54;
+        }
+        .ranking-empty { text-align: center; padding: 40px; color: #888; }
+        .your-rank {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .your-rank .big-points {
+            font-size: 40px;
+            font-weight: 700;
+            color: #075e54;
+        }
+
+        /* AUTH */
+        .auth-box {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .auth-box h3 {
+            color: #075e54;
+            margin-bottom: 15px;
+        }
+        .auth-box input {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 6px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+        .auth-box input:focus {
+            border-color: #075e54;
+            outline: none;
+        }
+        .auth-box .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+            margin: 5px 0;
+        }
+        .btn-primary { background: #075e54; color: white; }
+        .btn-primary:hover { background: #0a7a6e; }
+        .btn-success { background: #25d366; color: white; }
+        .btn-success:hover { background: #1da851; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; }
+        .auth-divider {
+            text-align: center;
+            margin: 15px 0;
+            color: #888;
+        }
+        .auth-divider span { background: white; padding: 0 15px; }
+        .auth-divider::before {
+            content: "";
+            display: block;
+            border-top: 1px solid #ddd;
+            margin-top: -10px;
+        }
+        .error-msg {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+        .success-msg {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        /* ONLINE BADGE */
+        .online-badge {
+            font-size: 12px;
+            padding: 4px 12px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* MODAL PHOTO PROFIL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        .modal-content h3 {
+            color: #075e54;
+            margin-bottom: 15px;
+        }
+        .modal-content .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #ddd;
+            margin: 15px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            overflow: hidden;
+        }
+        .modal-content .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .modal-content .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+            transition: 0.3s;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 0; }
+            .container {
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            .msg { max-width: 90%; }
+            .chat-input-area { padding: 6px 10px; }
+            .chat-input-area input { font-size: 14px; padding: 8px 12px; }
+            .toolbar button { width: 34px; height: 34px; font-size: 18px; }
+            .tabs { padding: 0 10px; }
+            .tab-btn { padding: 10px 15px; font-size: 13px; }
+            .msg img { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============ MODAL PHOTO DE PROFIL ============ -->
+<div class="modal" id="avatarModal">
+    <div class="modal-content">
+        <h3>📸 Changer ma photo</h3>
+        <div class="avatar-preview" id="avatarPreview">
+            <span id="avatarPreviewText">👤</span>
+            <img id="avatarPreviewImg" style="display:none;">
+        </div>
+        <input type="file" id="avatarInput" accept="image/*" style="margin:10px 0;">
+        <br>
+        <button class="btn btn-primary" onclick="uploadAvatar()">📤 Télécharger</button>
+        <button class="btn btn-danger" onclick="removeAvatar()">🗑️ Supprimer</button>
+        <br>
+        <button class="btn btn-secondary" onclick="closeAvatarModal()" style="background:#ddd; margin-top:10px;">Fermer</button>
+    </div>
+</div>
+
+<!-- ============ CONTAINER PRINCIPAL ============ -->
+<div class="container">
+    <h2 style="display:none;">💬 Chat</h2>
+
+    <!-- ============ AUTH ============ -->
+    <div id="auth" style="display:flex; align-items:center; justify-content:center; flex:1; background:#075e54;">
+        <div class="auth-box" style="max-width:400px; width:100%;">
+            <div style="text-align:center; margin-bottom:20px;">
+                <span style="font-size:48px;">💬</span>
+                <h2 style="color:#075e54;">Chat Communautaire</h2>
+            </div>
+            <h3>🔐 Créer un compte</h3>
+            <input type="text" id="displayName" placeholder="Votre nom">
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Mot de passe (6 caractères)">
+            <input type="password" id="passwordConfirm" placeholder="Confirmer">
+            <div id="authError" class="error-msg"></div>
+            <div id="authSuccess" class="success-msg"></div>
+            <button class="btn btn-primary" onclick="signUp()">📝 S'inscrire</button>
+            <div class="auth-divider"><span>ou</span></div>
+            <h3>🔑 Se connecter</h3>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Mot de passe">
+            <button class="btn btn-success" onclick="signIn()">🚀 Se connecter</button>
+        </div>
+    </div>
+
+    <!-- ============ CHAT ============ -->
+    <div id="chat" style="display:none; flex-direction:column; height:100%;">
+
+        <!-- HEADER -->
+        <div class="chat-header">
+            <div class="user-info" onclick="openAvatarModal()">
+                <div class="user-avatar" id="userAvatar">
+                    <span id="avatarEmoji">👤</span>
+                    <img id="avatarImg" style="display:none;">
+                    <div class="avatar-overlay">📸 Changer</div>
+                </div>
+                <div class="user-details">
+                    <div class="user-name" id="userDisplayName">Utilisateur</div>
+                    <div class="user-status">
+                        <span id="userPoints">⭐ 0 points</span>
+                        <span style="margin:0 5px;">•</span>
+                        <span class="online-badge">
+                            <span style="display:inline-block; width:8px; height:8px; background:#25d366; border-radius:50%;"></span>
+                            <span id="onlineCount">0</span> en ligne
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button onclick="signOut()" title="Déconnexion">⏻</button>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tabChat" onclick="switchTab('tabChat')">
+                💬 Chat <span class="badge" id="newMsgBadge" style="display:none;">0</span>
+            </button>
+            <button class="tab-btn" data-tab="tabRanking" onclick="switchTab('tabRanking')">🏆 Classement</button>
+        </div>
+
+        <!-- TAB CHAT -->
+        <div id="tabChat" class="tab-content active">
+            <div id="messages"></div>
+
+            <!-- Emoji Picker -->
+            <div class="picker-container" id="emojiPicker">
+                <span onclick="addEmoji('😊')">😊</span><span onclick="addEmoji('😂')">😂</span>
+                <span onclick="addEmoji('🤣')">🤣</span><span onclick="addEmoji('❤️')">❤️</span>
+                <span onclick="addEmoji('🔥')">🔥</span><span onclick="addEmoji('👍')">👍</span>
+                <span onclick="addEmoji('👏')">👏</span><span onclick="addEmoji('🎉')">🎉</span>
+                <span onclick="addEmoji('💪')">💪</span><span onclick="addEmoji('🤔')">🤔</span>
+                <span onclick="addEmoji('😍')">😍</span><span onclick="addEmoji('🥰')">🥰</span>
+                <span onclick="addEmoji('😘')">😘</span><span onclick="addEmoji('💀')">💀</span>
+                <span onclick="addEmoji('👀')">👀</span><span onclick="addEmoji('✨')">✨</span>
+                <span onclick="addEmoji('🌟')">🌟</span><span onclick="addEmoji('💯')">💯</span>
+                <span onclick="addEmoji('🤝')">🤝</span><span onclick="addEmoji('🙏')">🙏</span>
+            </div>
+
+            <!-- Sticker Picker -->
+            <div class="picker-container" id="stickerPicker">
+                <span onclick="sendSticker('🐱')">🐱</span><span onclick="sendSticker('🐶')">🐶</span>
+                <span onclick="sendSticker('🐼')">🐼</span><span onclick="sendSticker('🦊')">🦊</span>
+                <span onclick="sendSticker('🐨')">🐨</span><span onclick="sendSticker('🦄')">🦄</span>
+                <span onclick="sendSticker('🐲')">🐲</span><span onclick="sendSticker('🦋')">🦋</span>
+                <span onclick="sendSticker('🌈')">🌈</span><span onclick="sendSticker('⭐')">⭐</span>
+                <span onclick="sendSticker('🌺')">🌺</span><span onclick="sendSticker('🌸')">🌸</span>
+                <span onclick="sendSticker('🌻')">🌻</span><span onclick="sendSticker('🍕')">🍕</span>
+                <span onclick="sendSticker('🍔')">🍔</span><span onclick="sendSticker('🍟')">🍟</span>
+                <span onclick="sendSticker('🎮')">🎮</span><span onclick="sendSticker('⚽')">⚽</span>
+                <span onclick="sendSticker('🏀')">🏀</span><span onclick="sendSticker('🎸')">🎸</span>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <button onclick="toggleEmojiPicker()" title="Emojis">😊</button>
+                <button onclick="toggleStickerPicker()" title="Stickers">🎨</button>
+                <button onclick="document.getElementById('fileInput').click()" title="Fichier">📎</button>
+                <button onclick="document.getElementById('imageInput').click()" title="Photo">🖼️</button>
+                <button onclick="toggleRecording()" id="recordBtn" title="Audio">🎤</button>
+                <span class="recording-indicator" id="recordingIndicator">🔴 Enregistrement...</span>
+                <input type="file" id="fileInput" onchange="sendFile(this)">
+                <input type="file" id="imageInput" accept="image/*" onchange="sendImage(this)">
+            </div>
+
+            <!-- Input -->
+            <div class="chat-input-area">
+                <input type="text" id="messageInput" placeholder="Écrivez un message...">
+                <button class="btn" onclick="sendMessage()">Envoyer</button>
+            </div>
+        </div>
+
+        <!-- TAB CLASSEMENT -->
+        <div id="tabRanking" class="tab-content">
+            <div class="ranking-container">
+                <div style="margin-bottom:12px; font-size:14px; color:#666;">
+                    🏆 Classement des meilleurs contributeurs
+                </div>
+                <div class="ranking-header">
+                    <span style="width:35px;">#</span>
+                    <span style="flex:1;">Utilisateur</span>
+                    <span>Points</span>
+                </div>
+                <div id="rankingList">
+                    <div class="ranking-empty">⏳ Chargement...</div>
+                </div>
+                <div class="your-rank" id="yourRank">
+                    <div style="font-size:13px; color:#888;">Votre position</div>
+                    <div style="font-size:18px; font-weight:700;" id="yourRankPosition">-</div>
+                    <div class="big-points" id="yourRankPoints">0</div>
+                    <div style="font-size:13px; color:#888;">points</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ FIREBASE ============ -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+<script>
+    // ============================================
+    // 🔥 CONFIG FIREBASE - À REMPLACER
+    // ============================================
+      const firebaseConfig = {
+        apiKey: "AIzaSyAgOey1_nbhHApyM_Z00NskXDjUyC29sDE",
+        authDomain: "chat-app-210b9.firebaseapp.com",
+        projectId: "chat-app-210b9",
+        storageBucket: "chat-app-210b9.firebasestorage.app",
+        messagingSenderId: "379336270676",
+        appId: "1:379336270676:web:f5b83f846dd6b8985edec1"
+    };
+
+
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    const messagesRef = db.collection('messages');
+    const usersRef = db.collection('users');
+
+    // Variables
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+    let lastMessageCount = 0;
+    let notificationSound = null;
+
+    // ============================================
+    // 🎵 SON DE NOTIFICATION
+    // ============================================
+    function playNotificationSound() {
+        try {
+            // Créer un son avec Web Audio API
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.value = 0.2;
+            
+            oscillator.start();
+            setTimeout(() => {
+                oscillator.frequency.value = 1000;
+            }, 100);
+            setTimeout(() => {
+                oscillator.stop();
+                audioCtx.close();
+            }, 250);
+        } catch(e) {
+            // Fallback: utiliser un élément audio
+            const audio = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YV9vT18=');
+            audio.volume = 0.3;
+            audio.play().catch(() => {});
+        }
+    }
+
+    // ============================================
+    // 📸 PHOTO DE PROFIL
+    // ============================================
+    let avatarFile = null;
+
+    function openAvatarModal() {
+        document.getElementById('avatarModal').classList.add('active');
+        const user = auth.currentUser;
+        if (user) {
+            usersRef.doc(user.uid).get().then(doc => {
+                if (doc.exists && doc.data().avatarUrl) {
+                    document.getElementById('avatarPreviewImg').src = doc.data().avatarUrl;
+                    document.getElementById('avatarPreviewImg').style.display = 'block';
+                    document.getElementById('avatarPreviewText').style.display = 'none';
+                } else {
+                    document.getElementById('avatarPreviewImg').style.display = 'none';
+                    document.getElementById('avatarPreviewText').style.display = 'block';
+                    document.getElementById('avatarPreviewText').textContent = user.displayName?.charAt(0) || '👤';
+                }
+            });
+        }
+    }
+
+    function closeAvatarModal() {
+        document.getElementById('avatarModal').classList.remove('active');
+    }
+
+    document.getElementById('avatarInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            avatarFile = file;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatarPreviewImg').src = e.target.result;
+                document.getElementById('avatarPreviewImg').style.display = 'block';
+                document.getElementById('avatarPreviewText').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function uploadAvatar() {
+        const user = auth.currentUser;
+        if (!user || !avatarFile) return;
+
+        const path = `avatars/${user.uid}.jpg`;
+        const ref = storage.ref(path);
+
+        ref.put(avatarFile).then(snapshot => {
+            return ref.getDownloadURL();
+        }).then(url => {
+            return usersRef.doc(user.uid).update({
+                avatarUrl: url
+            });
+        }).then(() => {
+            alert('✅ Photo de profil mise à jour !');
+            closeAvatarModal();
+            updateUserAvatar();
+        }).catch(err => {
+            alert('❌ Erreur: ' + err.message);
+        });
+    }
+
+    function removeAvatar() {
+        const user = auth.currentUser;
+        if (!user) return;
+        if (!confirm('Supprimer votre photo de profil ?')) return;
+
+        usersRef.doc(user.uid).update({
+            avatarUrl: null
+        }).then(() => {
+            alert('✅ Photo supprimée');
+            closeAvatarModal();
+            updateUserAvatar();
+        }).catch(err => {
+            alert('❌ Erreur: ' + err.message);
+        });
+    }
+
+    function updateUserAvatar() {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        usersRef.doc(user.uid).get().then(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                const avatarEl = document.getElementById('userAvatar');
+                const img = document.getElementById('avatarImg');
+                const emoji = document.getElementById('avatarEmoji');
+                
+                if (data.avatarUrl) {
+                    img.src = data.avatarUrl;
+                    img.style.display = 'block';
+                    emoji.style.display = 'none';
+                } else {
+                    img.style.display = 'none';
+                    emoji.style.display = 'block';
+                    emoji.textContent = user.displayName?.charAt(0) || '👤';
+                }
+            }
+        });
+    }
+
+    // ============================================
+    // AUTH
+    // ============================================
+    function showError(msg) {
+        const el = document.getElementById('authError');
+        el.textContent = msg;
+        el.style.display = 'block';
+        document.getElementById('authSuccess').style.display = 'none';
+    }
+    function showSuccess(msg) {
+        const el = document.getElementById('authSuccess');
+        el.textContent = msg;
+        el.style.display = 'block';
+        document.getElementById('authError').style.display = 'none';
+    }
+
+    window.signUp = function() {
+        const displayName = document.getElementById('displayName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('passwordConfirm').value;
+
+        if (!displayName) return showError('⚠️ Entrez un nom');
+        if (!email) return showError('⚠️ Entrez un email');
+        if (password.length < 6) return showError('⚠️ Mot de passe 6 caractères min');
+        if (password !== confirm) return showError('⚠️ Mots de passe différents');
+
+        showError('');
+        showSuccess('⏳ Création...');
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                return userCredential.user.updateProfile({ displayName: displayName })
+                    .then(() => usersRef.doc(userCredential.user.uid).set({
+                        displayName: displayName,
+                        email: email,
+                        points: 0,
+                        messageCount: 0,
+                        avatarUrl: null,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        online: true
+                    }));
+            })
+            .then(() => {
+                showSuccess('✅ Compte créé !');
+                setTimeout(() => document.getElementById('authSuccess').style.display = 'none', 2000);
+            })
+            .catch((error) => {
+                let msg = error.message;
+                if (error.code === 'auth/email-already-in-use') msg = '❌ Email déjà utilisé';
+                showError(msg);
+            });
+    };
+
+    window.signIn = function() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!email || !password) return showError('⚠️ Remplissez tous les champs');
+
+        showError('');
+        showSuccess('⏳ Connexion...');
+
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                return usersRef.doc(userCredential.user.uid).update({
+                    online: true,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            })
+            .then(() => {
+                showSuccess('✅ Connecté !');
+                setTimeout(() => document.getElementById('authSuccess').style.display = 'none', 1500);
+            })
+            .catch((error) => {
+                let msg = error.message;
+                if (error.code === 'auth/user-not-found') msg = '❌ Compte inexistant';
+                else if (error.code === 'auth/wrong-password') msg = '❌ Mot de passe incorrect';
+                showError(msg);
+            });
+    };
+
+    window.signOut = function() {
+        const user = auth.currentUser;
+        if (user) {
+            usersRef.doc(user.uid).update({ online: false }).catch(() => {});
+        }
+        auth.signOut();
+    };
+
+    // ============================================
+    // ÉTAT DE CONNEXION
+    // ============================================
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById('auth').style.display = 'none';
+            document.getElementById('chat').style.display = 'flex';
+
+            const displayName = user.displayName || user.email.split('@')[0];
+            document.getElementById('userDisplayName').textContent = displayName;
+
+            loadUserPoints(user.uid);
+            loadMessages();
+            loadOnlineUsers();
+            loadRanking();
+            updateUserAvatar();
+
+            // 📣 Message de bienvenue
+            setTimeout(() => {
+                sendSystemMessage(`👋 ${displayName} a rejoint le chat !`);
+            }, 1000);
+
+        } else {
+            document.getElementById('auth').style.display = 'flex';
+            document.getElementById('chat').style.display = 'none';
+        }
+    });
+
+    // ============================================
+    // 📣 MESSAGE SYSTÈME (bienvenue)
+    // ============================================
+    function sendSystemMessage(text) {
+        const msg = {
+            text: text,
+            type: 'system',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        messagesRef.add(msg).catch(() => {});
+    }
+
+    // ============================================
+    // POINTS
+    // ============================================
+    function loadUserPoints(uid) {
+        usersRef.doc(uid).onSnapshot(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                const points = data.points || 0;
+                document.getElementById('userPoints').textContent = `⭐ ${points} points`;
+                document.getElementById('yourRankPoints').textContent = points;
+            }
+        });
+    }
+
+    // ============================================
+    // ENVOI MESSAGE TEXTE
+    // ============================================
+    window.sendMessage = function() {
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        const user = auth.currentUser;
+        if (!text || !user) return;
+
+        const displayName = user.displayName || user.email.split('@')[0];
+
+        messagesRef.add({
+            text: text,
+            email: user.email,
+            displayName: displayName,
+            uid: user.uid,
+            type: 'text',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            input.value = '';
+            return usersRef.doc(user.uid).update({
+                points: firebase.firestore.FieldValue.increment(1),
+                messageCount: firebase.firestore.FieldValue.increment(1)
+            });
+        }).catch(err => console.error('Erreur:', err));
+    };
+
+    document.getElementById('messageInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    // ============================================
+    // ONGLETS
+    // ============================================
+    window.switchTab = function(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+        if (tabId === 'tabRanking') loadRanking();
+        
+        // Cacher le badge des nouveaux messages
+        if (tabId === 'tabChat') {
+            document.getElementById('newMsgBadge').style.display = 'none';
+        }
+    };
+
+    // ============================================
+    // EMOJIS
+    // ============================================
+    window.toggleEmojiPicker = function() {
+        const picker = document.getElementById('emojiPicker');
+        picker.classList.toggle('active');
+        document.getElementById('stickerPicker').classList.remove('active');
+    };
+
+    window.addEmoji = function(emoji) {
+        const input = document.getElementById('messageInput');
+        input.value += emoji;
+        input.focus();
+        document.getElementById('emojiPicker').classList.remove('active');
+    };
+
+    // ============================================
+    // STICKERS
+    // ============================================
+    window.toggleStickerPicker = function() {
+        const picker = document.getElementById('stickerPicker');
+        picker.classList.toggle('active');
+        document.getElementById('emojiPicker').classList.remove('active');
+    };
+
+    window.sendSticker = function(sticker) {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const displayName = user.displayName || user.email.split('@')[0];
+
+        messagesRef.add({
+            text: sticker,
+            email: user.email,
+            displayName: displayName,
+            uid: user.uid,
+            type: 'sticker',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            document.getElementById('stickerPicker').classList.remove('active');
+            return usersRef.doc(user.uid).update({
+                points: firebase.firestore.FieldValue.increment(1)
+            });
+        });
+    };
+
+    // ============================================
+    // IMAGES
+    // ============================================
+    window.sendImage = function(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const displayName = user.displayName || user.email.split('@')[0];
+        const path = `images/${user.uid}/${Date.now()}_${file.name}`;
+        const ref = storage.ref(path);
+
+        messagesRef.add({
+            text: '📤 Téléchargement...',
+            email: user.email,
+            displayName: displayName,
+            uid: user.uid,
+            type: 'loading',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(docRef => {
+            ref.put(file).then(snapshot => ref.getDownloadURL())
+                .then(url => {
+                    docRef.update({
+                        text: '🖼️ Image',
+                        imageUrl: url,
+                        type: 'image',
+                        loading: false
+                    });
+                    return usersRef.doc(user.uid).update({
+                        points: firebase.firestore.FieldValue.increment(1)
+                    });
+                })
+                .catch(() => {
+                    docRef.update({ text: '❌ Erreur image', type: 'text' });
+                });
+        });
+        input.value = '';
+    };
+
+    // ============================================
+    // FICHIERS
+    // ============================================
+    window.sendFile = function(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const displayName = user.displayName || user.email.split('@')[0];
+        const path = `files/${user.uid}/${Date.now()}_${file.name}`;
+        const ref = storage.ref(path);
+
+        messagesRef.add({
+            text: `📁 Téléchargement de ${file.name}...`,
+            email: user.email,
+            displayName: displayName,
+            uid: user.uid,
+            type: 'loading',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(docRef => {
+            ref.put(file).then(snapshot => ref.getDownloadURL())
+                .then(url => {
+                    docRef.update({
+                        text: `📁 ${file.name}`,
+                        fileUrl: url,
+                        fileName: file.name,
+                        fileType: file.type,
+                        type: 'file',
+                        loading: false
+                    });
+                    return usersRef.doc(user.uid).update({
+                        points: firebase.firestore.FieldValue.increment(1)
+                    });
+                })
+                .catch(() => {
+                    docRef.update({ text: `❌ Erreur fichier ${file.name}`, type: 'text' });
+                });
+        });
+        input.value = '';
+    };
+
+    // ============================================
+    // AUDIO RECORDING
+    // ============================================
+    window.toggleRecording = function() {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            startRecording();
+        }
+    };
+
+    function startRecording() {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    sendAudio(audioBlob);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                mediaRecorder.start();
+                isRecording = true;
+                document.getElementById('recordBtn').style.color = 'red';
+                document.getElementById('recordingIndicator').classList.add('active');
+            })
+            .catch(err => alert('❌ Microphone: ' + err.message));
+    }
+
+    function stopRecording() {
+        if (mediaRecorder && isRecording) {
+            mediaRecorder.stop();
+            isRecording = false;
+            document.getElementById('recordBtn').style.color = '';
+            document.getElementById('recordingIndicator').classList.remove('active');
+        }
+    }
+
+    function sendAudio(blob) {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const displayName = user.displayName || user.email.split('@')[0];
+        const path = `audio/${user.uid}/${Date.now()}.webm`;
+        const ref = storage.ref(path);
+
+        messagesRef.add({
+            text: '🎤 Téléchargement audio...',
+            email: user.email,
+            displayName: displayName,
+            uid: user.uid,
+            type: 'loading',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(docRef => {
+            ref.put(blob).then(snapshot => ref.getDownloadURL())
+                .then(url => {
+                    docRef.update({
+                        text: '🎤 Message vocal',
+                        audioUrl: url,
+                        type: 'audio',
+                        loading: false
+                    });
+                    return usersRef.doc(user.uid).update({
+                        points: firebase.firestore.FieldValue.increment(1)
+                    });
+                })
+                .catch(() => {
+                    docRef.update({ text: '❌ Erreur audio', type: 'text' });
+                });
+        });
+    }
+
+    // ============================================
+    // AFFICHAGE DES MESSAGES + 🎵 NOTIFICATION
+    // ============================================
+    function loadMessages() {
+        messagesRef
+            .orderBy('timestamp', 'asc')
+            .limit(200)
+            .onSnapshot(snapshot => {
+                const msgDiv = document.getElementById('messages');
+                const currentUser = auth.currentUser;
+                let newMessage = false;
+
+                if (snapshot.docs.length > lastMessageCount && currentUser) {
+                    newMessage = true;
+                }
+                lastMessageCount = snapshot.docs.length;
+
+                msgDiv.innerHTML = '';
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    
+                    // Message système
+                    if (data.type === 'system') {
+                        const div = document.createElement('div');
+                        div.className = 'msg system-msg';
+                        div.textContent = data.text || '';
+                        msgDiv.appendChild(div);
+                        return;
+                    }
+
+                    const isMine = data.uid === currentUser?.uid;
+                    const div = document.createElement('div');
+                    div.className = 'msg ' + (isMine ? 'msg-mine' : 'msg-other');
+
+                    const senderName = data.displayName || data.email?.split('@')[0] || 'Anonyme';
+                    const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) : '';
+
+                    let content = data.text || '';
+
+                    if (data.type === 'image' && data.imageUrl) {
+                        content = `<img src="${data.imageUrl}" alt="Image" onclick="window.open('${data.imageUrl}')">`;
+                    } else if (data.type === 'audio' && data.audioUrl) {
+                        content = `<audio controls src="${data.audioUrl}"></audio>`;
+                    } else if (data.type === 'file' && data.fileUrl) {
+                        const icon = data.fileType?.startsWith('pdf') ? '📄' : '📁';
+                        content = `<a href="${data.fileUrl}" target="_blank" class="file-link">${icon} ${data.fileName || 'Fichier'}</a>`;
+                    } else if (data.type === 'sticker') {
+                        content = `<span class="sticker">${data.text}</span>`;
+                    } else if (data.type === 'loading') {
+                        content = `<em>${data.text}</em>`;
+                    }
+
+                    div.innerHTML = `
+                        ${!isMine && data.type !== 'system' ? `<span class="sender">${senderName}</span>` : ''}
+                        <div class="text-content">${content}</div>
+                        ${time ? `<span class="time">${time}</span>` : ''}
+                    `;
+                    msgDiv.appendChild(div);
+                });
+
+                msgDiv.scrollTop = msgDiv.scrollHeight;
+
+                // 🎵 SON DE NOTIFICATION
+                if (newMessage) {
+                    const lastMsg = snapshot.docs[snapshot.docs.length - 1]?.data();
+                    if (lastMsg && lastMsg.uid !== currentUser?.uid) {
+                        playNotificationSound();
+                        // Badge
+                        const badge = document.getElementById('newMsgBadge');
+                        badge.textContent = parseInt(badge.textContent || '0') + 1;
+                        badge.style.display = 'inline';
+                    }
+                }
+            });
+    }
+
+    // ============================================
+    // CLASSEMENT
+    // ============================================
+    function loadRanking() {
+        usersRef
+            .orderBy('points', 'desc')
+            .limit(10)
+            .onSnapshot(snapshot => {
+                const list = document.getElementById('rankingList');
+                const currentUser = auth.currentUser;
+
+                if (snapshot.empty) {
+                    list.innerHTML = '<div class="ranking-empty">📭 Aucun utilisateur</div>';
+                    return;
+                }
+
+                let html = '';
+                let rank = 1;
+                let userRank = null;
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const isMe = doc.id === currentUser?.uid;
+                    const points = data.points || 0;
+
+                    if (isMe) userRank = rank;
+
+                    let rankClass = '';
+                    if (rank === 1) rankClass = 'gold';
+                    else if (rank === 2) rankClass = 'silver';
+                    else if (rank === 3) rankClass = 'bronze';
+
+                    const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+                    const avatar = data.avatarUrl ? `<img src="${data.avatarUrl}" style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:6px;">` : '';
+
+                    html += `
+                        <div class="ranking-item ${isMe ? 'me' : ''}">
+                            <span class="rank ${rankClass}">${medal}</span>
+                            <span class="user">${avatar} ${data.displayName || 'Anonyme'} ${isMe ? '👈' : ''}</span>
+                            <span class="points">${points}</span>
+                        </div>
+                    `;
+                    rank++;
+                });
+
+                list.innerHTML = html;
+
+                if (userRank) {
+                    document.getElementById('yourRankPosition').textContent = `#${userRank} sur tous`;
+                } else if (currentUser) {
+                    usersRef.orderBy('points', 'desc').get().then(snapshot => {
+                        let pos = 1;
+                        let found = false;
+                        snapshot.forEach(doc => {
+                            if (doc.id === currentUser.uid) {
+                                document.getElementById('yourRankPosition').textContent = `#${pos} sur tous`;
+                                found = true;
+                            }
+                            pos++;
+                        });
+                        if (!found) document.getElementById('yourRankPosition').textContent = 'Pas classé';
+                    });
+                }
+            });
+    }
+
+    // ============================================
+    // UTILISATEURS EN LIGNE
+    // ============================================
+    function loadOnlineUsers() {
+        usersRef.where('online', '==', true).onSnapshot(snapshot => {
+            document.getElementById('onlineCount').textContent = snapshot.size;
+        });
+    }
+
+    // ============================================
+    // AUTO-CRÉATION UTILISATEUR
+    // ============================================
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            usersRef.doc(user.uid).get().then(doc => {
+                if (!doc.exists) {
+                    usersRef.doc(user.uid).set({
+                        displayName: user.displayName || user.email.split('@')[0],
+                        email: user.email,
+                        points: 0,
+                        messageCount: 0,
+                        avatarUrl: null,
+                        online: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    usersRef.doc(user.uid).update({
+                        online: true,
+                        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+            });
+        }
+    });
+
+    console.log('✅ WhatsApp-style Chat prêt !');
+    console.log('🎵 Notifications sonores activées');
+    console.log('👋 Messages de bienvenue automatiques');
+    console.log('📸 Photos de profil personnalisables');
+    console.log('🕐 Heures précises affichées');
+</script>
+
+</body>
+</html>
